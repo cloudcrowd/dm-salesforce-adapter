@@ -1,9 +1,8 @@
 $:.unshift "lib"
-require "dm-salesforce-adapter/version"
 
 Gem::Specification.new do |s|
   s.name = "dm-salesforce-adapter"
-  s.version = SalesforceAdapter::VERSION
+  s.version = '1.1.0'
   s.platform = Gem::Platform::RUBY
   s.has_rdoc = true
   s.extra_rdoc_files = ["README.markdown", "LICENSE"]
@@ -14,11 +13,10 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/cloudcrowd/dm-salesforce-adapter"
 
   s.add_dependency "httpclient",     "=2.1.5.2"
-  s.add_dependency "extlib",         "~> 0.9.15"
-  s.add_dependency "data_objects",   "~> 0.10.2"
-  s.add_dependency "dm-core",        "~> 1.0.2"
-  s.add_dependency "dm-validations", "~> 1.0.2"
-  s.add_dependency "dm-types",       "~> 1.0.2"
+  s.add_dependency "dm-do-adapter",  "~> 1.1.0"
+  s.add_dependency "dm-core",        "~> 1.1.0"
+  s.add_dependency "dm-validations", "~> 1.1.0"
+  s.add_dependency "dm-types",       "~> 1.1.0"
   s.add_dependency "soap4r",         "~> 1.5.8"
 
   s.require_path = 'lib'

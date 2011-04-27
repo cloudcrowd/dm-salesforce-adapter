@@ -1,12 +1,20 @@
-module SalesforceAdapter::Property
-  class Serial < ::DataMapper::Property::String
-    accept_options :serial
-    serial true
+require 'dm-salesforce-adapter/property'
 
-    length 15
+module DataMapper
+  module Adapters
+    class SalesforceAdapter < DataObjectsAdapter
+      module Property
+        class Serial < ::DataMapper::Property::String
+          accept_options :serial
+          serial true
 
-    def self.dump(value, property)
-      value[0..14] unless value.blank?
+          length 15
+
+          def typecast(value)
+            value.to_str[0..14] unless value.nil? || value.empty?
+          end
+        end
+      end
     end
   end
 end

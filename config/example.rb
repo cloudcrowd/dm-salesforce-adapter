@@ -2,10 +2,10 @@
 
 require 'rubygems'
 require 'dm-core'
-require 'dm-salesforce'
+require 'dm-salesforce-adapter'
 
 class Account
-  include DataMapper::Salesforce::Resource
+  include DataMapper::Adapters::SalesforceAdapter::Resource
 
   def self.default_repository_name
     :salesforce
@@ -30,7 +30,7 @@ class Account
 end
 
 class Contact
-  include DataMapper::Salesforce::Resource
+  include DataMapper::Adapters::SalesforceAdapter::Resource
 
   def self.default_repository_name
     :salesforce
