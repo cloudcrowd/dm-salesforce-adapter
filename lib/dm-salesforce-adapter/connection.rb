@@ -49,8 +49,7 @@ class SalesforceAdapter
 
     def field_name_for(klass_name, column)
       klass = SalesforceAPI.const_get(klass_name)
-      # extlib vs. activesupport
-      fields = [column, (column.camel_case rescue column.camelcase), "#{column}__c".downcase]
+      fields = [column, Inflector.camelize(column.to_s), "#{column}__c".downcase]
       options = /^(#{fields.join("|")})$/i
       matches = klass.instance_methods(false).grep(options)
       if matches.any?
@@ -128,7 +127,7 @@ class SalesforceAdapter
       yield
     rescue SOAP::FaultError => error
       retry_count ||= 0
-      if error.faultcode.to_s =~ "INVALID_SESSION_ID"
+      if error.faultcode.to_s =~ /INVALID_SESSION_ID/
         DataMapper.logger.debug "Got a invalid session id; reconnecting" if DataMapper.logger
         @driver = nil
         login
