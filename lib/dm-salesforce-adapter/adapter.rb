@@ -34,10 +34,11 @@ class SalesforceAdapter
   # Needs to be applied to all CRUD operations.
   def create(resources)
     arr = resources.map do |resource|
+      if DataMapper.logger
+        DataMapper.logger.debug "SalesforceAdapter - Create: #{resource.class.name} #{Hash[resource.dirty_attributes.map{|prop, value| [prop.name, value]}].inspect}"
+      end
       make_salesforce_obj(resource, resource.dirty_attributes)
     end
-
-    DataMapper.logger.debug "Create: #{arr.map(&:inspect).join("\n")}" if DataMapper.logger
 
     result = connection.create(arr)
     result.each_with_index do |record, i|
@@ -56,9 +57,12 @@ class SalesforceAdapter
 
   def update(attributes, collection)
     query = collection.query
-    arr   = collection.map { |obj| make_salesforce_obj(query, attributes) }
-
-    DataMapper.logger.debug "Update: #{arr.map(&:inspect).join("\n")}" if DataMapper.logger
+    arr   = collection.map { |obj|
+      if DataMapper.logger
+        DataMapper.logger.debug "SalesforceAdapter - Update: #{query.model} #{Hash[attributes.map{|prop, value| [prop.name, value]}].inspect}"
+      end
+      make_salesforce_obj(query, attributes)
+    }
 
     connection.update(arr).size
 
@@ -70,7 +74,7 @@ class SalesforceAdapter
     query = collection.query
     keys  = collection.map { |r| r.key }.flatten.uniq
 
-    DataMapper.logger.debug "Delete: #{keys.map(&:to_s).join(", ")}" if DataMapper.logger
+    DataMapper.logger.debug "SalesforceAdapter - Delete: #{query.model} #{keys.map(&:to_s).join(", ")}" if DataMapper.logger
 
     connection.delete(keys).size
 
@@ -145,7 +149,7 @@ class SalesforceAdapter
     sql << " ORDER BY #{order(query.order[0])}" unless query.order.nil? or query.order.empty?
     sql << " LIMIT #{query.limit}" if query.limit
 
-    DataMapper.logger.debug sql if DataMapper.logger
+    DataMapper.logger.debug "SalesforceAdapter - #{sql}" if DataMapper.logger
 
     connection.query(sql)
   end
@@ -164,8 +168,6 @@ class SalesforceAdapter
       next if property.serial? || property.key? and value.nil?
       values[property.field] = normalize_id_value(from.model, property, value)
     end
-
-    DataMapper.logger.debug "make_object: #{klass_name.inspect} - #{values.inspect}" if DataMapper.logger
 
     connection.make_object(klass_name, values)
   end
