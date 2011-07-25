@@ -97,7 +97,7 @@ class SalesforceAdapter
       begin
         result = driver.login(:username => @username, :password => @password).result
       rescue SOAP::FaultError => error
-        if error.faultcode.to_s =~ /INVALID_LOGIN/
+        if error.to_s =~ /INVALID_LOGIN/
           raise LoginFailed, error.faultstring.to_s
         else
           raise error

@@ -9,18 +9,17 @@ class Account
     :id
   end
 
-  property :id,                  Serial
-  property :name,                String,  :required => true
-  property :active,              Boolean, :field => 'Active_L_C__c'
-  property :annual_revenue,      Float
-  property :number_of_employees, Integer
+  property :id,                   Serial
+  property :name,                 String,  :required => true
+  property :annual_revenue,       Float
+  property :number_of_employees,  Integer
+  property :deleted,              Boolean, :field => "IsDeleted"
 
   has n, :contacts
 end
 
 Account.fix {{
   :name                 => Randgen.first_name,
-  :active               => true,
   :annual_revenue       => rand(1_000).to_f / 100,
   :number_of_employees  => (1..10).pick,
 }}

@@ -10,6 +10,7 @@ Dir.mkdir(root + "/tmp") unless File.exist?(root + "/tmp")
 
 require 'spec/fixtures/account'
 require 'spec/fixtures/contact'
+require 'spec/fixtures/event'
 
 # Default config - needs to be overridden
 sfconfig = {
@@ -32,6 +33,9 @@ end
 require 'fileutils'
 api_dir = sfconfig["apidir"]
 wsdl    = sfconfig["path"]
+
+VALID_USERNAME = sfconfig["username"]
+VALID_PASSWORD = sfconfig["password"]
 
 raise "WSDL not found: #{wsdl}" unless File.exist?(wsdl)
 

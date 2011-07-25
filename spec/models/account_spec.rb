@@ -21,7 +21,7 @@ describe "Account" do
 
   describe "#create" do
     it "has errors when omitting the account name" do
-      a = Account.create(:active => false)
+      a = Account.create
       a.errors.should have_key(:name)
     end
     describe "successful creation" do
@@ -29,8 +29,8 @@ describe "Account" do
       it "has a 15 character long id" do
         account.id.size.should == 15
       end
-      it 'is not active by default' do
-        account.active.should_not be_true
+      it 'is not deleted by default' do
+        account.deleted.should_not be_true
       end
 
       it 'floats can be nil' do
@@ -40,9 +40,9 @@ describe "Account" do
       end
     end
     describe "successful creation with on-offs" do
-      let(:account) { Account.create(:name => "Adidas Corporation", :active => true, :annual_revenue => 4000.25) }
-      it 'is active' do
-        account.active.should be_true
+      let(:account) { Account.create(:name => "Adidas Corporation", :annual_revenue => 4000.25) }
+      it 'is not deleted' do
+        account.deleted.should_not be_true
       end
       it 'has 4000.25 in annual revenue' do
         account.annual_revenue.should eql(4000.25)

@@ -37,6 +37,8 @@ class SalesforceAdapter
       make_salesforce_obj(resource, resource.dirty_attributes)
     end
 
+    DataMapper.logger.debug "Create: #{arr.map(&:inspect).join("\n")}" if DataMapper.logger
+
     result = connection.create(arr)
     result.each_with_index do |record, i|
       resource = resources[i]
@@ -56,6 +58,8 @@ class SalesforceAdapter
     query = collection.query
     arr   = collection.map { |obj| make_salesforce_obj(query, attributes) }
 
+    DataMapper.logger.debug "Update: #{arr.map(&:inspect).join("\n")}" if DataMapper.logger
+
     connection.update(arr).size
 
   rescue Connection::SOAPError => e
@@ -65,6 +69,8 @@ class SalesforceAdapter
   def delete(collection)
     query = collection.query
     keys  = collection.map { |r| r.key }.flatten.uniq
+
+    DataMapper.logger.debug "Delete: #{keys.map(&:to_s).join(", ")}" if DataMapper.logger
 
     connection.delete(keys).size
 
@@ -158,6 +164,8 @@ class SalesforceAdapter
       next if property.serial? || property.key? and value.nil?
       values[property.field] = normalize_id_value(from.model, property, value)
     end
+
+    DataMapper.logger.debug "make_object: #{klass_name.inspect} - #{values.inspect}" if DataMapper.logger
 
     connection.make_object(klass_name, values)
   end
