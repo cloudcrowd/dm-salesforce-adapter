@@ -76,16 +76,20 @@ describe "Updating an Event" do
 
 
   describe "filtering on string and boolean" do
+    before(:each) do
+      Event.all(:subject.like => 'Sack Race').destroy
+    end
+
 
     it 'includes' do
       account = Account.first
-      event = Event.create(:subject => 'Sack Race', :all_day_event => true)
+      event = Event.gen(:subject => 'Sack Race', :all_day_event => true)
       Event.all(:subject => 'Sack Race', :all_day_event => true).should include(event)
     end
 
     it 'excludes' do
       account = Account.first
-      event = Event.create(:subject => 'Sack Race', :all_day_event => true)
+      event = Event.gen(:subject => 'Sack Race', :all_day_event => true)
       Event.all(:subject => 'Sack Race', :all_day_event => false).should_not include(event)
     end
 
