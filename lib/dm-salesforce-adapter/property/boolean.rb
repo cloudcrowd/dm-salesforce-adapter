@@ -7,7 +7,7 @@ module SalesforceAdapter::Property
       [true, 1, '1', 'true', 'TRUE'].include?(value) ? true : false
     end
 
-    def typecast(value)
+    def dump(value)
       [true, 1, '1', 'true', 'TRUE'].include?(value) ? TRUE : FALSE
     end
 

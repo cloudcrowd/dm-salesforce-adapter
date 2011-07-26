@@ -30,4 +30,28 @@ describe SalesforceAdapter::Property::Boolean do
 
   end
 
+
+  describe 'full cycle' do
+
+    it 'should be true all the way through' do
+      event = Event.gen(:all_day_event => true)
+      event.all_day_event.should be_true
+      event.save.should be_true
+      event.all_day_event.should be_true
+      event.reload.all_day_event.should be_true
+      Event.first(:id => event.id).all_day_event.should be_true
+    end
+
+
+    it 'should be false all the way through' do
+      event = Event.gen(:all_day_event => false)
+      event.all_day_event.should be_false
+      event.save.should be_true
+      event.all_day_event.should be_false
+      event.reload.all_day_event.should be_false
+      Event.first(:id => event.id).all_day_event.should be_false
+    end
+
+  end
+
 end
