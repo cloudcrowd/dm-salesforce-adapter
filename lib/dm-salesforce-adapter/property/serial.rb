@@ -3,10 +3,10 @@ module SalesforceAdapter::Property
     accept_options :serial
     serial true
 
-    length 15
+    length 18
 
     def dump(value)
-      value[0..14] unless value.blank?
+      value.to_s[0..17]
     end
   end
 end

@@ -34,6 +34,9 @@ class SalesforceAdapter
   # Needs to be applied to all CRUD operations.
   def create(resources)
     arr = resources.map do |resource|
+      if DataMapper.logger
+        DataMapper.logger.debug "SalesforceAdapter - Create: #{resource.class.name} #{Hash[resource.dirty_attributes.map{|prop, value| [prop.name, value]}].inspect}"
+      end
       make_salesforce_obj(resource, resource.dirty_attributes)
     end
 
@@ -54,7 +57,12 @@ class SalesforceAdapter
 
   def update(attributes, collection)
     query = collection.query
-    arr   = collection.map { |obj| make_salesforce_obj(query, attributes) }
+    arr   = collection.map { |obj|
+      if DataMapper.logger
+        DataMapper.logger.debug "SalesforceAdapter - Update: #{query.model} #{Hash[attributes.map{|prop, value| [prop.name, value]}].inspect}"
+      end
+      make_salesforce_obj(query, attributes)
+    }
 
     connection.update(arr).size
 
@@ -65,6 +73,8 @@ class SalesforceAdapter
   def delete(collection)
     query = collection.query
     keys  = collection.map { |r| r.key }.flatten.uniq
+
+    DataMapper.logger.debug "SalesforceAdapter - Delete: #{query.model} #{keys.map(&:to_s).join(", ")}" if DataMapper.logger
 
     connection.delete(keys).size
 
@@ -139,7 +149,7 @@ class SalesforceAdapter
     sql << " ORDER BY #{order(query.order[0])}" unless query.order.nil? or query.order.empty?
     sql << " LIMIT #{query.limit}" if query.limit
 
-    DataMapper.logger.debug sql if DataMapper.logger
+    DataMapper.logger.debug "SalesforceAdapter - #{sql}" if DataMapper.logger
 
     connection.query(sql)
   end
@@ -165,7 +175,7 @@ class SalesforceAdapter
   def normalize_id_value(klass, property, value)
     return nil unless value
     properties = Array(klass.send(:salesforce_id_properties)).map { |p| p.to_sym } rescue []
-    return properties.include?(property.name) ? value[0..14] : value
+    return properties.include?(property.name) ? value[0..17] : value
   end
 end
 
