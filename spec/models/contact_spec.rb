@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec/spec_helper'
 
 describe "Finding a Contact" do
   let(:valid_id) { DataMapper.repository(:salesforce) { Contact.gen.id } }

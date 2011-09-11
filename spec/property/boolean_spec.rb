@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec/spec_helper'
 
 describe SalesforceAdapter::Property::Boolean do
   let(:all_day_event) { DataMapper.repository(:salesforce) { Event.gen(:all_day_event => true) } }
